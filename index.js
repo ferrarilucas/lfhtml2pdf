@@ -1,6 +1,20 @@
 import { chromium } from 'playwright';
+import { fs } from 'fs';
+import { path } from 'path';
+
+function isBrowserDownloaded(browserPath) {
+  return fs.existsSync(browserPath);
+}
+async function downloadBrowsers() {
+  await require('playwright').downloadBrowser('chromium');
+}
 async function main(base64String) {
-    const browser = await chromium.launch();
+  const browsersPath = path.join(process.env.HOME || process.env.USERPROFILE, '.cache/ms-playwright');
+ if (!isBrowserDownloaded(path.join(browsersPath, 'chromium'))){
+  downloadBrowsers();
+ }
+
+  const browser = await chromium.launch();
   const page = await browser.newPage();
 
   // Decodifica a string base64 para HTML
